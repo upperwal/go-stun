@@ -98,6 +98,13 @@ func main() {
 	}
 
 	stream.Write([]byte("hello: " + c.LocalAddr().String()))
+	for {
+		fmt.Print("> ")
+		text, _ = reader.ReadString('\n')
+		text = strings.Trim(text, "\n")
+
+		stream.Write([]byte(text))
+	}
 	select {}
 
 }
@@ -124,6 +131,6 @@ func handleStream(s quic.Stream) {
 			fmt.Println("Err when reading", err)
 			continue
 		}
-		fmt.Println("Read: ", string(buf[:i]))
+		fmt.Printf("\x1b[32m%s\x1b[0m>\n", string(buf[:i]))
 	}
 }
