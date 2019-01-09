@@ -8,12 +8,15 @@ import (
 	"os"
 	"strings"
 
+	logging "github.com/ipfs/go-log"
 	crypto "github.com/libp2p/go-libp2p-crypto"
 	ma "github.com/multiformats/go-multiaddr"
 	stun "github.com/upperwal/go-stun"
 )
 
 func main() {
+
+	logging.SetLogLevel("stun", "DEBUG")
 
 	port := flag.String("p", "0", "listener port")
 	sc := flag.String("sc", "/ip4/127.0.0.1/udp/3000", "STUN server")
