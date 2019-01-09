@@ -28,8 +28,7 @@ var quicConfig = &quic.Config{
 		// TODO(#6): require source address validation when under load
 		return true
 	},
-	KeepAlive:   true,
-	IdleTimeout: 30 * time.Hour,
+	KeepAlive: true,
 }
 
 func main() {
