@@ -3,7 +3,6 @@ package stun
 import (
 	"crypto/tls"
 	"net"
-	"time"
 
 	ic "github.com/libp2p/go-libp2p-crypto"
 	"github.com/lucas-clemente/quic-go"
@@ -27,7 +26,7 @@ type Client struct {
 }
 
 func NewClient(key ic.PrivKey, pc net.PacketConn) (*Client, error) {
-	tlsConfig, err := generateConfig(key)
+	tlsConfig, err := GenerateConfig(key)
 	if err != nil {
 		return nil, err
 	}
@@ -142,8 +141,8 @@ func (c *Client) bombardPackets(peer []byte) {
 		return
 	}
 
-	finishChan := make(chan bool)
-	go c.readRawConn(finishChan)
+	//finishChan := make(chan bool)
+	//go c.readRawConn(finishChan)
 
 	for i := 0; i < 30; i++ {
 		log.Info("Bombarding...", c.conn.LocalAddr())
@@ -152,10 +151,10 @@ func (c *Client) bombardPackets(peer []byte) {
 			log.Error(err)
 			return
 		}
-		time.Sleep(time.Second * 1)
+		//time.Sleep(time.Second * 1)
 	}
 
-	finishChan <- true
+	//finishChan <- true
 }
 
 func (c *Client) readRawConn(f chan bool) {

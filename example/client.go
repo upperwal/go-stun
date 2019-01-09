@@ -7,12 +7,30 @@ import (
 	"net"
 	"os"
 	"strings"
+	"time"
+
+	"github.com/lucas-clemente/quic-go"
+	"github.com/multiformats/go-multiaddr-net"
 
 	logging "github.com/ipfs/go-log"
 	crypto "github.com/libp2p/go-libp2p-crypto"
 	ma "github.com/multiformats/go-multiaddr"
 	stun "github.com/upperwal/go-stun"
 )
+
+var quicConfig = &quic.Config{
+	Versions:                              []quic.VersionNumber{quic.VersionMilestone0_10_0},
+	MaxIncomingStreams:                    1000,
+	MaxIncomingUniStreams:                 -1,              // disable unidirectional streams
+	MaxReceiveStreamFlowControlWindow:     3 * (1 << 20),   // 3 MB
+	MaxReceiveConnectionFlowControlWindow: 4.5 * (1 << 20), // 4.5 MB
+	AcceptCookie: func(clientAddr net.Addr, cookie *quic.Cookie) bool {
+		// TODO(#6): require source address validation when under load
+		return true
+	},
+	KeepAlive:   true,
+	IdleTimeout: 30 * time.Hour,
+}
 
 func main() {
 
@@ -30,6 +48,17 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+
+	tlsConfig, err := stun.GenerateConfig(prvKey)
+	if err != nil {
+		panic(err)
+	}
+	l, err := quic.Listen(c, tlsConfig, quicConfig)
+	if err != nil {
+		panic(err)
+	}
+	go handleListener(l)
+
 	client, err := stun.NewClient(prvKey, c)
 	if err != nil {
 		panic(err)
@@ -54,6 +83,47 @@ func main() {
 		panic(err)
 	}
 
+	addr, err := manet.ToNetAddr(raddr)
+	time.Sleep(time.Second * 1)
+
+	fmt.Println("Now trying to connect to", addr)
+	sess, err := quic.Dial(c, addr, "proto.p2p", tlsConfig, quicConfig)
+	if err != nil {
+		panic(err)
+	}
+
+	stream, err := sess.OpenStream()
+	if err != nil {
+		panic(err)
+	}
+
+	stream.Write([]byte("hello: " + c.LocalAddr().String()))
 	select {}
 
+}
+
+func handleListener(l quic.Listener) {
+	for {
+		sess, err := l.Accept()
+		if err != nil {
+			fmt.Println("Error in accept session:", err)
+		}
+		stream, err := sess.AcceptStream()
+		if err != nil {
+			fmt.Println("Error in accept session:", err)
+		}
+		go handleStream(stream)
+	}
+}
+
+func handleStream(s quic.Stream) {
+	buf := make([]byte, 1000)
+	for {
+		i, err := s.Read(buf)
+		if err != nil {
+			fmt.Println("Err when reading", err)
+			continue
+		}
+		fmt.Println("Read: ", string(buf[:i]))
+	}
 }

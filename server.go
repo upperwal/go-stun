@@ -47,7 +47,7 @@ type Server struct {
 }
 
 func NewServer(key ic.PrivKey) (*Server, error) {
-	tlsConfig, err := generateConfig(key)
+	tlsConfig, err := GenerateConfig(key)
 	if err != nil {
 		return nil, err
 	}

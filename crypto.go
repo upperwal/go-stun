@@ -20,7 +20,7 @@ const hostname = "quic.ipfs"
 
 const certValidityPeriod = 180 * 24 * time.Hour
 
-func generateConfig(privKey ic.PrivKey) (*tls.Config, error) {
+func GenerateConfig(privKey ic.PrivKey) (*tls.Config, error) {
 	key, hostCert, err := keyToCertificate(privKey)
 	if err != nil {
 		return nil, err
