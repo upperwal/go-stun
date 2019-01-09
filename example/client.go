@@ -131,6 +131,6 @@ func handleStream(s quic.Stream) {
 			fmt.Println("Err when reading", err)
 			continue
 		}
-		fmt.Printf("\x1b[32m%s\x1b[0m>\n", string(buf[:i]))
+		fmt.Printf("$ \x1b[32m%s\x1b[0m\n", string(buf[:i]))
 	}
 }
