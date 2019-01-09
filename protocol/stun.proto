@@ -1,0 +1,18 @@
+syntax = "proto3";
+package protocol;
+
+message Stun {
+    enum Type {
+        CONNECT = 0;
+        HOLE_PUNCH_REQUEST = 1;
+        KEEP_ALIVE = 2;
+        HOLE_PUNCH_REQUEST_ACCEPT = 3;
+    }
+
+    message HolePunchRequestMessage {
+        bytes connectToPeerID = 1;
+    }
+
+    Type type = 1;
+    HolePunchRequestMessage holePunchRequestMessage = 2;
+}
