@@ -39,7 +39,7 @@ func main() {
 	client.ConnectSTUNServer([]ma.Multiaddr{saddr})
 
 	reader := bufio.NewReader(os.Stdin)
-	fmt.Println("Enter dest Multiaddr: ")
+	fmt.Print("Enter dest Multiaddr: ")
 	text, _ := reader.ReadString('\n')
 	text = strings.Trim(text, "\n")
 
@@ -53,5 +53,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+
+	select {}
 
 }
