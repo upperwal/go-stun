@@ -142,6 +142,9 @@ func (c *Client) bombardPackets(peer []byte) {
 		return
 	}
 
+	finishChan := make(chan bool)
+	go c.readRawConn(finishChan)
+
 	for i := 0; i < 30; i++ {
 		log.Info("Bombarding...", c.conn.LocalAddr())
 		_, err := c.conn.WriteTo([]byte("a"), peerAddr)
@@ -150,6 +153,27 @@ func (c *Client) bombardPackets(peer []byte) {
 			return
 		}
 		time.Sleep(time.Second * 1)
+	}
+
+	finishChan <- true
+}
+
+func (c *Client) readRawConn(f chan bool) {
+	buf := make([]byte, 1000)
+	log.Info("Reading raw")
+	for {
+		select {
+		case <-f:
+			log.Info("Returning finished")
+			return
+		default:
+		}
+		i, addr, err := c.conn.ReadFrom(buf)
+		if err != nil {
+			log.Error(err)
+			continue
+		}
+		log.Info("Reading something:", buf[:i], addr)
 	}
 }
 
