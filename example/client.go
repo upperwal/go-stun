@@ -78,10 +78,12 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	err = client.PunchHole(raddr)
+	com, err := client.PunchHole(raddr)
 	if err != nil {
 		panic(err)
 	}
+
+	<-com
 
 	addr, err := manet.ToNetAddr(raddr)
 	time.Sleep(time.Second * 1)

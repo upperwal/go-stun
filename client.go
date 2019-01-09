@@ -3,6 +3,7 @@ package stun
 import (
 	"crypto/tls"
 	"net"
+	"sync"
 
 	ic "github.com/libp2p/go-libp2p-crypto"
 	"github.com/lucas-clemente/quic-go"
@@ -18,11 +19,13 @@ type ClientOptions struct {
 }
 
 type Client struct {
-	conn           net.PacketConn
-	stunServerList []ma.Multiaddr
-	stunSession    quic.Session
-	stunStream     quic.Stream
-	tlsConfig      *tls.Config
+	conn              net.PacketConn
+	stunServerList    []ma.Multiaddr
+	stunSession       quic.Session
+	stunStream        quic.Stream
+	tlsConfig         *tls.Config
+	completionMapChan map[string]chan bool
+	cmapMutex         *sync.Mutex
 }
 
 func NewClient(key ic.PrivKey, pc net.PacketConn) (*Client, error) {
@@ -33,8 +36,10 @@ func NewClient(key ic.PrivKey, pc net.PacketConn) (*Client, error) {
 	log.Info("Client starting on: ", pc.LocalAddr())
 
 	return &Client{
-		conn:      pc,
-		tlsConfig: tlsConfig,
+		conn:              pc,
+		tlsConfig:         tlsConfig,
+		completionMapChan: make(map[string]chan bool),
+		cmapMutex:         &sync.Mutex{},
 	}, nil
 }
 
@@ -154,6 +159,8 @@ func (c *Client) bombardPackets(peer []byte) {
 		//time.Sleep(time.Second * 1)
 	}
 
+	c.completionMapChan[maAddr.String()] <- true
+
 	//finishChan <- true
 }
 
@@ -176,7 +183,7 @@ func (c *Client) readRawConn(f chan bool) {
 	}
 }
 
-func (c *Client) PunchHole(raddr ma.Multiaddr) error {
+func (c *Client) PunchHole(raddr ma.Multiaddr) (chan bool, error) {
 	packet := &protocol.Stun{
 		Type: protocol.Stun_HOLE_PUNCH_REQUEST,
 		HolePunchRequestMessage: &protocol.Stun_HolePunchRequestMessage{
@@ -186,14 +193,19 @@ func (c *Client) PunchHole(raddr ma.Multiaddr) error {
 	raw, err := proto.Marshal(packet)
 	if err != nil {
 		log.Error(err)
-		return err
+		return nil, err
 	}
+
+	c.cmapMutex.Lock()
+	c.completionMapChan[raddr.String()] = make(chan bool)
+	c.cmapMutex.Unlock()
+
 	_, err = c.stunStream.Write(raw)
 	if err != nil {
 		log.Error(err)
-		return err
+		return nil, err
 	}
-	return nil
+	return c.completionMapChan[raddr.String()], nil
 }
 
 /* func (c *Client) sendPunchHoleRequest */
