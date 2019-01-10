@@ -4,6 +4,7 @@ import (
 	"crypto/tls"
 	"net"
 	"sync"
+	"time"
 
 	ic "github.com/libp2p/go-libp2p-crypto"
 	"github.com/lucas-clemente/quic-go"
@@ -184,6 +185,7 @@ func (c *Client) readRawConn(f chan bool) {
 }
 
 func (c *Client) PunchHole(raddr ma.Multiaddr) (chan bool, error) {
+	log.Info("Punching hole to: ", raddr)
 	packet := &protocol.Stun{
 		Type: protocol.Stun_HOLE_PUNCH_REQUEST,
 		HolePunchRequestMessage: &protocol.Stun_HolePunchRequestMessage{
@@ -205,6 +207,12 @@ func (c *Client) PunchHole(raddr ma.Multiaddr) (chan bool, error) {
 		log.Error(err)
 		return nil, err
 	}
+
+	go func() {
+		time.Sleep(time.Second * 1)
+		c.completionMapChan[raddr.String()] <- false
+	}()
+
 	return c.completionMapChan[raddr.String()], nil
 }
 
