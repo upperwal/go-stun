@@ -135,6 +135,7 @@ func main() {
 		/* libp2p.Transport(tcp.NewTCPTransport)), */
 		libp2p.ListenAddrStrings("/ip4/0.0.0.0/udp/0/quic"),
 		libp2p.Identity(prvKey),
+		libp2p.EnableRelay(),
 	)
 	if err != nil {
 		panic(err)
@@ -225,6 +226,33 @@ func main() {
 		var stream inet.Stream
 		if <-wait {
 			host.Network().(*swarm.Swarm).Backoff().Clear(p.ID)
+			stream, err = host.NewStream(ctx, p.ID, "/chat/1.1.0")
+
+			if err != nil {
+				fmt.Println(err)
+			} else {
+				fmt.Println("Connected to: ", p)
+				rw := bufio.NewReadWriter(bufio.NewReader(stream), bufio.NewWriter(stream))
+
+				go writeData(rw)
+				go readData(rw)
+			}
+		} else {
+			host.Network().(*swarm.Swarm).Backoff().Clear(p.ID)
+			relayaddr, err := ma.NewMultiaddr("/p2p-circuit/ipfs/" + p.ID.Pretty())
+			if err != nil {
+				panic(err)
+			}
+
+			pRelayInfo := pstore.PeerInfo{
+				ID:    p.ID,
+				Addrs: []ma.Multiaddr{relayaddr},
+			}
+
+			if err := host.Connect(context.Background(), pRelayInfo); err != nil {
+				panic(err)
+			}
+
 			stream, err = host.NewStream(ctx, p.ID, "/chat/1.1.0")
 
 			if err != nil {
