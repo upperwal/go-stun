@@ -241,7 +241,7 @@ func main() {
 				go readData(rw)
 			}
 		} else {
-			fmt.Println("hole punching failed")
+			fmt.Println("hole punching failed. connecting through replay")
 			connectThroughRelay(ctx, host, p)
 		}
 
@@ -263,12 +263,12 @@ func connectThroughRelay(ctx context.Context, host host.Host, p pstore.PeerInfo)
 	}
 
 	if err := host.Connect(context.Background(), pRelayInfo); err != nil {
-		fmt.Println(err)
+		fmt.Println("relay connect failed", err)
 	} else {
 		stream, err := host.NewStream(ctx, p.ID, "/chat/1.1.0")
 
 		if err != nil {
-			fmt.Println(err)
+			fmt.Println("relay stream failed", err)
 		} else {
 			fmt.Println("Connected to: ", p)
 			rw := bufio.NewReadWriter(bufio.NewReader(stream), bufio.NewWriter(stream))
