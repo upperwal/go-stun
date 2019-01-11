@@ -10,6 +10,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/libp2p/go-libp2p-host"
+
 	"github.com/libp2p/go-libp2p-swarm"
 
 	cid "github.com/ipfs/go-cid"
@@ -229,7 +231,8 @@ func main() {
 			stream, err = host.NewStream(ctx, p.ID, "/chat/1.1.0")
 
 			if err != nil {
-				fmt.Println(err)
+				fmt.Println("direct connection failed", err)
+				connectThroughRelay(ctx, host, p)
 			} else {
 				fmt.Println("Connected to: ", p)
 				rw := bufio.NewReadWriter(bufio.NewReader(stream), bufio.NewWriter(stream))
@@ -238,36 +241,40 @@ func main() {
 				go readData(rw)
 			}
 		} else {
-			host.Network().(*swarm.Swarm).Backoff().Clear(p.ID)
-			relayaddr, err := ma.NewMultiaddr("/p2p-circuit/ipfs/" + p.ID.Pretty())
-			if err != nil {
-				panic(err)
-			}
-
-			pRelayInfo := pstore.PeerInfo{
-				ID:    p.ID,
-				Addrs: []ma.Multiaddr{relayaddr},
-			}
-
-			if err := host.Connect(context.Background(), pRelayInfo); err != nil {
-				fmt.Println(err)
-			} else {
-				stream, err = host.NewStream(ctx, p.ID, "/chat/1.1.0")
-
-				if err != nil {
-					fmt.Println(err)
-				} else {
-					fmt.Println("Connected to: ", p)
-					rw := bufio.NewReadWriter(bufio.NewReader(stream), bufio.NewWriter(stream))
-
-					go writeData(rw)
-					go readData(rw)
-				}
-			}
-
+			fmt.Println("hole punching failed")
+			connectThroughRelay(ctx, host, p)
 		}
 
 	}
 
 	select {}
+}
+
+func connectThroughRelay(ctx context.Context, host host.Host, p pstore.PeerInfo) {
+	host.Network().(*swarm.Swarm).Backoff().Clear(p.ID)
+	relayaddr, err := ma.NewMultiaddr("/p2p-circuit/ipfs/" + p.ID.Pretty())
+	if err != nil {
+		panic(err)
+	}
+
+	pRelayInfo := pstore.PeerInfo{
+		ID:    p.ID,
+		Addrs: []ma.Multiaddr{relayaddr},
+	}
+
+	if err := host.Connect(context.Background(), pRelayInfo); err != nil {
+		fmt.Println(err)
+	} else {
+		stream, err := host.NewStream(ctx, p.ID, "/chat/1.1.0")
+
+		if err != nil {
+			fmt.Println(err)
+		} else {
+			fmt.Println("Connected to: ", p)
+			rw := bufio.NewReadWriter(bufio.NewReader(stream), bufio.NewWriter(stream))
+
+			go writeData(rw)
+			go readData(rw)
+		}
+	}
 }
