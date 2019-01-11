@@ -89,7 +89,7 @@ func main() {
 	logging.SetLogLevel("dht", "DEBUG")
 	logging.SetLogLevel("stun", "DEBUG")
 	logging.SetLogLevel("relay", "DEBUG")
-	logging.SetLogLevel("swarm", "DEBUG")
+	logging.SetLogLevel("swarm2", "DEBUG")
 	help := flag.Bool("h", false, "Display Help")
 	rendezvousString := flag.String("r", rendezvous, "Unique string to identify group of nodes. Share this with your friends to let them connect with you")
 	flag.Parse()
