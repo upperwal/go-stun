@@ -205,7 +205,7 @@ func main() {
 
 		var raddr ma.Multiaddr
 		for _, addr := range p.Addrs {
-			if strings.Contains(addr.String(), "p2p-circuit") || strings.Contains(addr.String(), "127.0.") || strings.Contains(addr.String(), "10.") || strings.Contains(addr.String(), "127.0") || strings.Contains(addr.String(), "192.168") {
+			if strings.Contains(addr.String(), "p2p-circuit") || strings.Contains(addr.String(), "127.0.") || strings.Contains(addr.String(), "10.0") || strings.Contains(addr.String(), "127.0") || strings.Contains(addr.String(), "192.168") {
 				continue
 			} else {
 				raddr = addr
