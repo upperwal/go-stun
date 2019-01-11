@@ -89,6 +89,7 @@ func main() {
 	logging.SetLogLevel("dht", "DEBUG")
 	logging.SetLogLevel("stun", "DEBUG")
 	logging.SetLogLevel("relay", "DEBUG")
+	logging.SetLogLevel("swarm", "DEBUG")
 	help := flag.Bool("h", false, "Display Help")
 	rendezvousString := flag.String("r", rendezvous, "Unique string to identify group of nodes. Share this with your friends to let them connect with you")
 	flag.Parse()
@@ -233,6 +234,7 @@ func main() {
 
 			if err != nil {
 				fmt.Println("direct connection failed", err)
+				host.Peerstore().A
 				connectThroughRelay(ctx, host, p)
 			} else {
 				fmt.Println("Connected to: ", p)
