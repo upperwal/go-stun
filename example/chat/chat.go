@@ -88,6 +88,7 @@ func writeData(rw *bufio.ReadWriter) {
 func main() {
 	logging.SetLogLevel("dht", "DEBUG")
 	logging.SetLogLevel("stun", "DEBUG")
+	logging.SetLogLevel("relay", "DEBUG")
 	help := flag.Bool("h", false, "Display Help")
 	rendezvousString := flag.String("r", rendezvous, "Unique string to identify group of nodes. Share this with your friends to let them connect with you")
 	flag.Parse()
@@ -241,7 +242,7 @@ func main() {
 				go readData(rw)
 			}
 		} else {
-			fmt.Println("hole punching failed. connecting through replay")
+			fmt.Println("hole punching failed. connecting through relay")
 			connectThroughRelay(ctx, host, p)
 		}
 
