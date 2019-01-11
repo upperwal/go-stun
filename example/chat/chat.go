@@ -234,7 +234,6 @@ func main() {
 
 			if err != nil {
 				fmt.Println("direct connection failed", err)
-				host.Peerstore().A
 				connectThroughRelay(ctx, host, p)
 			} else {
 				fmt.Println("Connected to: ", p)
