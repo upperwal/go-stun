@@ -7,6 +7,7 @@ import (
 
 	logging "github.com/ipfs/go-log"
 	libp2p "github.com/libp2p/go-libp2p"
+	circuit "github.com/libp2p/go-libp2p-circuit"
 	"github.com/libp2p/go-libp2p-crypto"
 	dht "github.com/libp2p/go-libp2p-kad-dht"
 	inet "github.com/libp2p/go-libp2p-net"
@@ -44,6 +45,7 @@ func main() {
 		libp2p.ListenAddrs(sourceMultiAddr),
 		libp2p.Identity(prvKey),
 		libp2p.Transport(libp2pquic.NewTransport),
+		libp2p.EnableRelay(circuit.OptHop),
 	)
 	if err != nil {
 		panic(err)
