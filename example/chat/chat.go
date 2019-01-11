@@ -250,20 +250,21 @@ func main() {
 			}
 
 			if err := host.Connect(context.Background(), pRelayInfo); err != nil {
-				panic(err)
-			}
-
-			stream, err = host.NewStream(ctx, p.ID, "/chat/1.1.0")
-
-			if err != nil {
 				fmt.Println(err)
 			} else {
-				fmt.Println("Connected to: ", p)
-				rw := bufio.NewReadWriter(bufio.NewReader(stream), bufio.NewWriter(stream))
+				stream, err = host.NewStream(ctx, p.ID, "/chat/1.1.0")
 
-				go writeData(rw)
-				go readData(rw)
+				if err != nil {
+					fmt.Println(err)
+				} else {
+					fmt.Println("Connected to: ", p)
+					rw := bufio.NewReadWriter(bufio.NewReader(stream), bufio.NewWriter(stream))
+
+					go writeData(rw)
+					go readData(rw)
+				}
 			}
+
 		}
 
 	}
