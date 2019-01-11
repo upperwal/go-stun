@@ -15,9 +15,9 @@ import (
 	"github.com/libp2p/go-libp2p-swarm"
 
 	cid "github.com/ipfs/go-cid"
-	iaddr "github.com/ipfs/go-ipfs-addr"
 	logging "github.com/ipfs/go-log"
 	libp2p "github.com/libp2p/go-libp2p"
+	circuit "github.com/libp2p/go-libp2p-circuit"
 	crypto "github.com/libp2p/go-libp2p-crypto"
 	dht "github.com/libp2p/go-libp2p-kad-dht"
 	inet "github.com/libp2p/go-libp2p-net"
@@ -139,7 +139,7 @@ func main() {
 		/* libp2p.Transport(tcp.NewTCPTransport)), */
 		libp2p.ListenAddrStrings("/ip4/0.0.0.0/udp/0/quic"),
 		libp2p.Identity(prvKey),
-		libp2p.EnableRelay(),
+		libp2p.EnableRelay(circuit.OptDiscovery),
 	)
 	if err != nil {
 		panic(err)
@@ -159,8 +159,12 @@ func main() {
 
 	// Let's connect to the bootstrap nodes first. They will tell us about the other nodes in the network.
 	for _, peerAddr := range bootstrapPeers {
-		addr, _ := iaddr.ParseString(peerAddr)
-		peerinfo, _ := pstore.InfoFromP2pAddr(addr.Multiaddr())
+		addr, err := ma.NewMultiaddr(peerAddr)
+		if err != nil {
+			fmt.Println(err)
+		}
+		fmt.Println(addr)
+		peerinfo, _ := pstore.InfoFromP2pAddr(addr)
 
 		if err := host.Connect(ctx, *peerinfo); err != nil {
 			fmt.Println("Conn to bootstrap: ", err)
