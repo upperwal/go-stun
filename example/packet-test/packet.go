@@ -9,6 +9,11 @@ import (
 	"strings"
 )
 
+var (
+	list map[string]net.Addr
+	c    net.PacketConn
+)
+
 func main() {
 	port := flag.String("p", "0", "listener port")
 	flag.Parse()
@@ -19,7 +24,9 @@ func main() {
 	}
 	fmt.Println("My addr: ", c.LocalAddr())
 
-	reader := bufio.NewReader(os.Stdin)
+	listenCommands(c)
+
+	/* reader := bufio.NewReader(os.Stdin)
 	fmt.Print("Enter dest Multiaddr: ")
 	text, _ := reader.ReadString('\n')
 	text = strings.Trim(text, "\n")
@@ -50,5 +57,44 @@ func main() {
 			panic(err)
 		}
 
+	} */
+}
+
+func listenCommands(c net.PacketConn) {
+	reader := bufio.NewReader(os.Stdin)
+	list = make(map[string]net.Addr)
+
+	for {
+		fmt.Print("$> ")
+		text, _ := reader.ReadString('\n')
+		text = strings.Trim(text, "\n")
+		commandString := strings.SplitN(text, " ", 2)
+
+		switch commandString[0] {
+		case "a":
+			idx := strings.Split(commandString[1], "-")
+			addr, err := net.ResolveUDPAddr("udp4", idx[1])
+			if err != nil {
+				fmt.Println("Incorrect value: ", err)
+				continue
+			}
+			list[idx[0]] = addr
+			fmt.Println("Value Added:", addr)
+		case "d":
+			dial(c, commandString[1])
+		}
+	}
+}
+
+func dial(c net.PacketConn, s string) {
+	addr := list[s]
+	if addr == nil {
+		fmt.Println("This addr is not added")
+		return
+	}
+	fmt.Println("Sending packet to:", addr)
+	_, err := c.WriteTo([]byte("hello"), addr)
+	if err != nil {
+		panic(err)
 	}
 }
