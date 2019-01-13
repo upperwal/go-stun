@@ -158,7 +158,7 @@ func (c *Client) bombardPackets(peer []byte) {
 			log.Error(err)
 			return
 		}
-		time.Sleep(time.Millisecond * 10)
+		time.Sleep(time.Millisecond * 100)
 	}
 
 	c.completionMapChan[maAddr.String()] <- true
