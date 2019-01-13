@@ -41,11 +41,15 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+	tpt, err := libp2pquic.NewTransport(prvKey, libp2pquic.TransportOpt{})
+	if err != nil {
+		panic(err)
+	}
 	host, err := libp2p.New(
 		ctx,
 		libp2p.ListenAddrs(sourceMultiAddr),
 		libp2p.Identity(prvKey),
-		libp2p.Transport(libp2pquic.NewTransport),
+		libp2p.Transport(tpt),
 		libp2p.EnableRelay(circuit.OptHop),
 	)
 	if err != nil {

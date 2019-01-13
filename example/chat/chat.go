@@ -25,7 +25,6 @@ import (
 	ma "github.com/multiformats/go-multiaddr"
 	mh "github.com/multiformats/go-multihash"
 	"github.com/upperwal/go-libp2p-quic-transport" // packetConn branch
-	stun "github.com/upperwal/go-stun"
 )
 
 // IPFS bootstrap nodes. Used to find other peers in the network.
@@ -35,10 +34,10 @@ var bootstrapPeers = []string{
 	"/ip4/104.236.76.40/tcp/4001/ipfs/QmSoLV4Bbm51jM9C4gDYZQ9Cy3U6aXMJDAbzgu2fzaDs64",
 	"/ip4/128.199.219.111/tcp/4001/ipfs/QmSoLSafTMBsPKadTEgaXctDQVcqN88CNLHXMkTNwMKPnu",
 	"/ip4/178.62.158.247/tcp/4001/ipfs/QmSoLer265NRgSp2LA3dPaeykiS1J6DifTC88f5uVQKNAd", */
-	"/ip4/40.122.104.26/udp/4000/quic/p2p/QmVbcMycaK8ni5CeiM7JRjBRAdmwky6dQ6KcoxLesZDPk9", // might be offline
+	"/ip4/104.43.165.178/udp/4000/quic/p2p/QmVbcMycaK8ni5CeiM7JRjBRAdmwky6dQ6KcoxLesZDPk9", // might be offline
 }
 
-var stunServer = "/ip4/40.122.104.26/udp/3000/" // might be offline
+var stunServer = "/ip4/104.43.165.178/udp/3000/" // might be offline
 
 var rendezvous = "meet me hesfdfe"
 
@@ -111,26 +110,31 @@ func main() {
 		panic(err)
 	}
 
-	quicTransport, err := libp2pquic.NewTransport(prvKey)
+	quicOption := libp2pquic.TransportOpt{
+		EnableRelay: true,
+		stunServer:  ma.Multiaddr{stunMA},
+	}
+
+	quicTransport, err := libp2pquic.NewTransport(prvKey, quicOption)
 	if err != nil {
 		panic(err)
 	}
 
-	pc, err := libp2pquic.GetConnForAddr(quicTransport, "udp4", "0.0.0.0:0")
+	/* pc, err := libp2pquic.GetConnForAddr(quicTransport, "udp4", "0.0.0.0:0")
 	if err != nil {
 		panic(err)
-	}
+	} */
 
-	sclient, err := stun.NewClient(prvKey, pc)
+	/* sclient, err := stun.NewClient(prvKey, pc)
 	if err != nil {
 		panic(err)
-	}
+	} */
 
-	stunMA, err := ma.NewMultiaddr(stunServer)
+	/* stunMA, err := ma.NewMultiaddr(stunServer)
 	if err != nil {
 		panic(err)
-	}
-	sclient.ConnectSTUNServer([]ma.Multiaddr{stunMA})
+	} */
+	/* sclient.ConnectSTUNServer([]ma.Multiaddr{stunMA}) */
 
 	host, err := libp2p.New(
 		ctx,
