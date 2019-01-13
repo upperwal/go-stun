@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"flag"
 	"fmt"
+	"math/rand"
 	"net"
 	"os"
 	"strings"
@@ -94,13 +95,13 @@ func dial(c net.PacketConn, s string) {
 		return
 	}
 	for j := 0; j < 3; j++ {
-		for i := 0; i < 2; i++ {
+		for i := 0; i < 20; i++ {
 			fmt.Println(i, "Sending packet to:", addr)
 			_, err := c.WriteTo([]byte("hello"), addr)
 			if err != nil {
 				panic(err)
 			}
-			time.Sleep(time.Millisecond * 400)
+			time.Sleep(time.Millisecond * time.Duration(rand.Intn(130)))
 		}
 		time.Sleep(time.Millisecond * 1500)
 	}
