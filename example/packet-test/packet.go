@@ -95,15 +95,15 @@ func dial(c net.PacketConn, s string) {
 		return
 	}
 	for j := 0; j < 6; j++ {
-		for i := 0; i < 2; i++ {
+		for i := 0; i < 3; i++ {
 			fmt.Println(i, "Sending packet to:", addr)
 			_, err := c.WriteTo([]byte("hello"), addr)
 			if err != nil {
 				panic(err)
 			}
-			time.Sleep(time.Millisecond * time.Duration(rand.Intn(3000)+800))
+			time.Sleep(time.Millisecond * time.Duration(rand.Intn(300)+20))
 		}
-		time.Sleep(time.Millisecond * time.Duration(rand.Intn(1000)+500))
+		time.Sleep(time.Millisecond * time.Duration(rand.Intn(2000)+1000))
 	}
 
 }
