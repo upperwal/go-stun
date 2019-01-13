@@ -16,6 +16,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+	fmt.Println("My addr: ", c.LocalAddr())
 
 	reader := bufio.NewReader(os.Stdin)
 	fmt.Print("Enter dest Multiaddr: ")
