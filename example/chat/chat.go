@@ -110,9 +110,14 @@ func main() {
 		panic(err)
 	}
 
+	stunMA, err := ma.NewMultiaddr(stunServer)
+	if err != nil {
+		panic(err)
+	}
+
 	quicOption := libp2pquic.TransportOpt{
-		EnableRelay: true,
-		stunServer:  ma.Multiaddr{stunMA},
+		EnableStun:  true,
+		StunServers: []ma.Multiaddr{stunMA},
 	}
 
 	quicTransport, err := libp2pquic.NewTransport(prvKey, quicOption)
@@ -230,15 +235,25 @@ func main() {
 		raddr = raddr.Decapsulate(quicMA)
 		fmt.Println("Dialing to: ", p.ID, raddr)
 
-		wait, err := sclient.PunchHole(raddr)
+		/* wait, err := sclient.PunchHole(raddr)
+		if err != nil {
+			panic(err)
+		} */
+
+		stream, err := host.NewStream(ctx, p.ID, "/chat/1.1.0")
 		if err != nil {
 			panic(err)
 		}
 
-		var stream inet.Stream
+		fmt.Println("Connected to: ", p)
+		rw := bufio.NewReadWriter(bufio.NewReader(stream), bufio.NewWriter(stream))
+
+		go writeData(rw)
+		go readData(rw)
+
+		/* var stream inet.Stream
 		if <-wait {
 			host.Network().(*swarm.Swarm).Backoff().Clear(p.ID)
-			stream, err = host.NewStream(ctx, p.ID, "/chat/1.1.0")
 
 			if err != nil {
 				fmt.Println("direct connection failed", err)
@@ -253,7 +268,7 @@ func main() {
 		} else {
 			fmt.Println("hole punching failed. connecting through relay")
 			connectThroughRelay(ctx, host, p)
-		}
+		} */
 
 	}
 
