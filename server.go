@@ -143,7 +143,7 @@ func (s *Server) handleHolePunchRequest(pp ProtocolPacket) {
 	log.Info(peerAddr.String())
 	foreignStream, ok := s.streamMap[peerAddr.String()]
 	if !ok {
-		log.Error("No stream to this peer")
+		log.Warning("No stream to this peer")
 		return
 	}
 
