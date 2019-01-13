@@ -11,6 +11,7 @@ import (
 
 func main() {
 	port := flag.String("p", "0", "listener port")
+	flag.Parse()
 
 	c, err := net.ListenPacket("udp4", "0.0.0.0:"+*port)
 	if err != nil {
