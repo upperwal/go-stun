@@ -93,13 +93,16 @@ func dial(c net.PacketConn, s string) {
 		fmt.Println("This addr is not added")
 		return
 	}
-	for i := 0; i < 5; i++ {
-		fmt.Println(i, "Sending packet to:", addr)
-		_, err := c.WriteTo([]byte("hello"), addr)
-		if err != nil {
-			panic(err)
+	for j := 0; j < 3; j++ {
+		for i := 0; i < 5; i++ {
+			fmt.Println(i, "Sending packet to:", addr)
+			_, err := c.WriteTo([]byte("hello"), addr)
+			if err != nil {
+				panic(err)
+			}
+			time.Sleep(time.Millisecond * 100)
 		}
-		time.Sleep(time.Millisecond * 100)
+		time.Sleep(time.Millisecond * 1500)
 	}
 
 }
