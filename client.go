@@ -127,6 +127,7 @@ func (c *Client) handleHolePunchRequest(packet *protocol.Stun) {
 		return
 	}
 	log.Info("bombarding now.")
+	time.Sleep(time.Millisecond * 700)
 	c.bombardPackets(packet.HolePunchRequestMessage.ConnectToPeerID)
 }
 
