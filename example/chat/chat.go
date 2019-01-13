@@ -242,7 +242,8 @@ func main() {
 
 		stream, err := host.NewStream(ctx, p.ID, "/chat/1.1.0")
 		if err != nil {
-			panic(err)
+			fmt.Println(err)
+			continue
 		}
 
 		fmt.Println("Connected to: ", p)
