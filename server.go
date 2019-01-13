@@ -151,7 +151,7 @@ func (s *Server) handleHolePunchRequest(pp ProtocolPacket) {
 	if err != nil {
 		log.Error(err)
 	}
-	log.Info("Sending punch request to ", peerAddr)
+	log.Info("Sending punch request to foreign -> ", peerAddr)
 
 	packet := &protocol.Stun{
 		Type: protocol.Stun_HOLE_PUNCH_REQUEST,
