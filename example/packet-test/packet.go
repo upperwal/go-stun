@@ -101,7 +101,7 @@ func dial(c net.PacketConn, s string) {
 			if err != nil {
 				panic(err)
 			}
-			time.Sleep(time.Millisecond * time.Duration(rand.Intn(130)+50))
+			time.Sleep(time.Millisecond * time.Duration(rand.Intn(600)+100))
 		}
 		time.Sleep(time.Millisecond * 1500)
 	}
