@@ -84,6 +84,8 @@ func listenCommands(c net.PacketConn) {
 			fmt.Println("Value Added:", addr)
 		case "d":
 			dial(c, commandString[1])
+		case "dl":
+			go dialLong(c, commandString[1])
 		}
 	}
 }
@@ -97,6 +99,25 @@ func dial(c net.PacketConn, s string) {
 	for j := 0; j < 6; j++ {
 		for i := 0; i < 3; i++ {
 			fmt.Println(i, "Sending packet to:", addr)
+			_, err := c.WriteTo([]byte("hello"), addr)
+			if err != nil {
+				panic(err)
+			}
+			time.Sleep(time.Millisecond * time.Duration(rand.Intn(300)+20))
+		}
+		time.Sleep(time.Millisecond * time.Duration(rand.Intn(2000)+1000))
+	}
+
+}
+
+func dialLong(c net.PacketConn, s string) {
+	addr := list[s]
+	if addr == nil {
+		fmt.Println("This addr is not added")
+		return
+	}
+	for {
+		for {
 			_, err := c.WriteTo([]byte("hello"), addr)
 			if err != nil {
 				panic(err)
