@@ -140,10 +140,10 @@ func (s *Server) handleHolePunchRequest(pp ProtocolPacket) {
 		log.Error(err)
 		return
 	}
-	log.Info(peerAddr.String())
+	log.Info("New hole punching req to:", peerAddr)
 	foreignStream, ok := s.streamMap[peerAddr.String()]
 	if !ok {
-		log.Warning("No stream to this peer")
+		log.Warning("No stream to addr: ", peerAddr.String())
 		return
 	}
 
@@ -151,7 +151,7 @@ func (s *Server) handleHolePunchRequest(pp ProtocolPacket) {
 	if err != nil {
 		log.Error(err)
 	}
-	log.Info("New hole punch: foreign -> ", peerAddr)
+	log.Info("Sending punch request to ", peerAddr)
 
 	packet := &protocol.Stun{
 		Type: protocol.Stun_HOLE_PUNCH_REQUEST,
