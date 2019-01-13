@@ -17,7 +17,6 @@ import (
 	cid "github.com/ipfs/go-cid"
 	logging "github.com/ipfs/go-log"
 	libp2p "github.com/libp2p/go-libp2p"
-	circuit "github.com/libp2p/go-libp2p-circuit"
 	crypto "github.com/libp2p/go-libp2p-crypto"
 	dht "github.com/libp2p/go-libp2p-kad-dht"
 	inet "github.com/libp2p/go-libp2p-net"
@@ -148,7 +147,7 @@ func main() {
 		/* libp2p.Transport(tcp.NewTCPTransport)), */
 		libp2p.ListenAddrStrings("/ip4/0.0.0.0/udp/0/quic"),
 		libp2p.Identity(prvKey),
-		libp2p.EnableRelay(circuit.OptDiscovery),
+		//libp2p.EnableRelay(circuit.OptDiscovery),
 	)
 	if err != nil {
 		panic(err)
