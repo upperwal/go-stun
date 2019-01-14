@@ -96,8 +96,8 @@ func dial(c net.PacketConn, s string) {
 		fmt.Println("This addr is not added")
 		return
 	}
-	for j := 0; j < 6; j++ {
-		for i := 0; i < 3; i++ {
+	for j := 0; j < 1; j++ {
+		for i := 0; i < 1; i++ {
 			fmt.Println(i, "Sending packet to:", addr)
 			_, err := c.WriteTo([]byte("hello"), addr)
 			if err != nil {
