@@ -122,9 +122,9 @@ func dialLong(c net.PacketConn, s string) {
 			if err != nil {
 				panic(err)
 			}
-			time.Sleep(time.Millisecond * time.Duration(rand.Intn(300)+20))
+			time.Sleep(time.Millisecond * time.Duration(rand.Intn(2000)+900))
 		}
-		time.Sleep(time.Millisecond * time.Duration(rand.Intn(2000)+1000))
+		time.Sleep(time.Millisecond * time.Duration(rand.Intn(3000)+2000))
 	}
 
 }
