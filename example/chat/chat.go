@@ -33,10 +33,10 @@ var bootstrapPeers = []string{
 	"/ip4/104.236.76.40/tcp/4001/ipfs/QmSoLV4Bbm51jM9C4gDYZQ9Cy3U6aXMJDAbzgu2fzaDs64",
 	"/ip4/128.199.219.111/tcp/4001/ipfs/QmSoLSafTMBsPKadTEgaXctDQVcqN88CNLHXMkTNwMKPnu",
 	"/ip4/178.62.158.247/tcp/4001/ipfs/QmSoLer265NRgSp2LA3dPaeykiS1J6DifTC88f5uVQKNAd", */
-	"/ip4/104.43.165.178/udp/4000/quic/p2p/QmVbcMycaK8ni5CeiM7JRjBRAdmwky6dQ6KcoxLesZDPk9", // might be offline
+	"/ip4/40.113.200.27/udp/4000/quic/p2p/QmVbcMycaK8ni5CeiM7JRjBRAdmwky6dQ6KcoxLesZDPk9", // might be offline
 }
 
-var stunServer = "/ip4/104.43.165.178/udp/3000/" // might be offline
+var stunServer = "/ip4/40.113.200.27/udp/3000/" // might be offline
 
 var rendezvous = "meet me hesfdfe"
 
