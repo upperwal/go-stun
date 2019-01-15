@@ -151,14 +151,14 @@ func (c *Client) bombardPackets(peer []byte) {
 	//finishChan := make(chan bool)
 	//go c.readRawConn(finishChan)
 
-	for i := 0; i < 30; i++ {
+	for i := 0; i < 10; i++ {
 		log.Info("Bombarding...", c.conn.LocalAddr())
 		_, err := c.conn.WriteTo([]byte("a"), peerAddr)
 		if err != nil {
 			log.Error(err)
 			return
 		}
-		time.Sleep(time.Millisecond * 100)
+		time.Sleep(time.Millisecond * 60)
 	}
 
 	c.completionMapChan[maAddr.String()] <- true
@@ -210,7 +210,7 @@ func (c *Client) PunchHole(raddr ma.Multiaddr) (chan bool, error) {
 	}
 
 	go func() {
-		time.Sleep(time.Second * 1)
+		time.Sleep(time.Second * 3)
 		c.completionMapChan[raddr.String()] <- false
 	}()
 
