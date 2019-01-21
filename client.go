@@ -2,6 +2,7 @@ package stun
 
 import (
 	"crypto/tls"
+	"fmt"
 	"net"
 	"sync"
 	"time"
@@ -61,6 +62,9 @@ func (c *Client) ConnectSTUNServer(m []ma.Multiaddr) {
 				go c.handleMessages()
 				return
 			}
+		} else {
+			log.Error("Could not dial to STUN Server")
+			return
 		}
 	}
 }
@@ -203,6 +207,10 @@ func (c *Client) PunchHole(raddr ma.Multiaddr) (chan bool, error) {
 	c.completionMapChan[raddr.String()] = make(chan bool)
 	c.cmapMutex.Unlock()
 
+	if c.stunStream == nil {
+		log.Error("stun stream nil")
+		return nil, fmt.Errorf("stun stream nil")
+	}
 	_, err = c.stunStream.Write(raw)
 	if err != nil {
 		log.Error(err)
