@@ -97,11 +97,13 @@ func (c *Client) handleMessages() {
 		i, err := c.stunStream.Read(buf)
 		if err != nil {
 			log.Error(err)
+			return
 		}
 
 		err = proto.Unmarshal(buf[:i], packet)
 		if err != nil {
 			log.Error(err)
+			return
 		}
 		log.Info("Read new message: ", packet)
 
