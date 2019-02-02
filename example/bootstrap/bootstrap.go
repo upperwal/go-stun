@@ -68,10 +68,11 @@ func main() {
 		panic(err)
 	}
 
-	_, err = floodsub.NewGossipSub(ctx, host)
+	g, err := floodsub.NewGossipSub(ctx, host)
 	if err != nil {
 		panic(err)
 	}
+	g.Subscribe("NEW_RIDE")
 
 	select {}
 }
