@@ -6,6 +6,7 @@ import (
 	mrand "math/rand"
 
 	logging "github.com/ipfs/go-log"
+	floodsub "github.com/libp2p/go-floodsub"
 	libp2p "github.com/libp2p/go-libp2p"
 	circuit "github.com/libp2p/go-libp2p-circuit"
 	"github.com/libp2p/go-libp2p-crypto"
@@ -62,6 +63,11 @@ func main() {
 	fmt.Println("This node: ", host.ID().Pretty(), " ", host.Addrs())
 
 	_, err = dht.New(ctx, host)
+	if err != nil {
+		panic(err)
+	}
+
+	_, err = floodsub.NewGossipSub(ctx, host)
 	if err != nil {
 		panic(err)
 	}
