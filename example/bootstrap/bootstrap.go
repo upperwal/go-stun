@@ -31,6 +31,7 @@ func (nn *netNotifiee) ListenClose(n inet.Network, a ma.Multiaddr) {}
 func main() {
 	logging.SetLogLevel("dht", "DEBUG")
 	logging.SetLogLevel("relay", "DEBUG")
+	logging.SetLogLevel("pubsub", "DEBUG")
 	ctx := context.Background()
 
 	// libp2p.New constructs a new libp2p Host.
