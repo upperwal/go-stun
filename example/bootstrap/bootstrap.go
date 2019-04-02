@@ -74,5 +74,11 @@ func main() {
 	}
 	g.Subscribe("NEW_RIDE")
 
+	host.SetStreamHandler("BOOTSTRAP", handler)
+
 	select {}
+}
+
+func handler(s inet.Stream) {
+	fmt.Println("New stream from: ", s.Conn().RemotePeer())
 }
