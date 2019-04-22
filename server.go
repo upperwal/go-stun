@@ -4,7 +4,7 @@ import (
 	"net"
 	"sync"
 
-	"github.com/multiformats/go-multiaddr-net"
+	manet "github.com/multiformats/go-multiaddr-net"
 
 	proto "github.com/gogo/protobuf/proto"
 	logging "github.com/ipfs/go-log"
@@ -17,7 +17,7 @@ import (
 var log = logging.Logger("stun")
 
 var quicConfig = &quic.Config{
-	Versions:                              []quic.VersionNumber{quic.VersionMilestone0_10_0},
+	Versions:                              []quic.VersionNumber{quic.VersionMilestone0_11_1},
 	MaxIncomingStreams:                    1000,
 	MaxIncomingUniStreams:                 -1,              // disable unidirectional streams
 	MaxReceiveStreamFlowControlWindow:     3 * (1 << 20),   // 3 MB
