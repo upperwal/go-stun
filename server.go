@@ -17,7 +17,6 @@ import (
 var log = logging.Logger("stun")
 
 var quicConfig = &quic.Config{
-	Versions:                              []quic.VersionNumber{quic.VersionTLS},
 	MaxIncomingStreams:                    1000,
 	MaxIncomingUniStreams:                 -1,              // disable unidirectional streams
 	MaxReceiveStreamFlowControlWindow:     3 * (1 << 20),   // 3 MB
