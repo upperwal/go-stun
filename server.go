@@ -8,7 +8,7 @@ import (
 
 	proto "github.com/gogo/protobuf/proto"
 	logging "github.com/ipfs/go-log"
-	ic "github.com/libp2p/go-libp2p-crypto"
+	ic "github.com/libp2p/go-libp2p-core/crypto"
 	quic "github.com/lucas-clemente/quic-go"
 	ma "github.com/multiformats/go-multiaddr"
 	protocol "github.com/upperwal/go-stun/protocol"

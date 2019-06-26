@@ -7,7 +7,7 @@ import (
 	"sync"
 	"time"
 
-	ic "github.com/libp2p/go-libp2p-crypto"
+	ic "github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/lucas-clemente/quic-go"
 
 	proto "github.com/gogo/protobuf/proto"

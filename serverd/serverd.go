@@ -2,7 +2,7 @@ package main
 
 import (
 	logging "github.com/ipfs/go-log"
-	crypto "github.com/libp2p/go-libp2p-crypto"
+	crypto "github.com/libp2p/go-libp2p-core/crypto"
 	stun "github.com/upperwal/go-stun"
 )
 

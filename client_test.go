@@ -6,7 +6,7 @@ import (
 	"time"
 
 	logging "github.com/ipfs/go-log"
-	crypto "github.com/libp2p/go-libp2p-crypto"
+	crypto "github.com/libp2p/go-libp2p-core/crypto"
 	ma "github.com/multiformats/go-multiaddr"
 )
 
